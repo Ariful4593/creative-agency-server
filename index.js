@@ -3,7 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser')
 const MongoClient = require('mongodb').MongoClient;
 const fileUpload = require('express-fileupload');
-const { ObjectID, ObjectId } = require('mongodb');
+const { ObjectId } = require('mongodb');
 
 require('dotenv').config()
 
@@ -124,9 +124,10 @@ client.connect(err => {
     })
 
     app.patch('/update/:id', (req, res) => {
-        agencyCollection.updateOne({ _id: ObjectId(req.params.id) },
+        console.log(req.params.id)
+        agencyCollection.updateOne({ _id: req.params.id },
             {
-                $set: { status: req.body.updateStatus }
+                $set: { status: req.body.status }
             }
         )
         .then(result => {
