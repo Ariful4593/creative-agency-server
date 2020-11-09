@@ -31,7 +31,8 @@ client.connect(err => {
         const service = req.body.service;
         const description = req.body.description;
         const price = req.body.price;
-        
+        const status = req.body.status;
+
         const newImg = file.data;
         const encImg = newImg.toString('base64');
 
@@ -41,17 +42,10 @@ client.connect(err => {
             img: Buffer.from(encImg, 'base64')
         };
 
-        agencyCollection.insertOne({ name,email,service, description,price, image })
+        agencyCollection.insertOne({ name, email, service, description,status, price, image })
             .then(result => {
                 res.send(result.insertedCount > 0);
             })
-
-        // const orderData = req.body;
-        // console.log(orderData)
-        // agencyCollection.insertOne(orderData)
-        //     .then(result => {
-        //         res.send(result.insertedCount > 0)
-        //     })
     })
 
     app.post('/reviewOrder', (req, res) => {
@@ -63,46 +57,46 @@ client.connect(err => {
             })
     })
 
-    app.get('/getReviewOrder', (req, res) =>{
+    app.get('/getReviewOrder', (req, res) => {
         reviewOrder.find({})
-        .toArray( (err, documents)  =>{
-            res.send(documents)
-        })
+            .toArray((err, documents) => {
+                res.send(documents)
+            })
     })
 
-    app.get('/getOrder', (req, res) =>{
+    app.get('/getOrder', (req, res) => {
         // const email = req.body.email;
         agencyCollection.find({})
-        .toArray( (err, documents) =>{
-            res.send(documents)
-        } )
+            .toArray((err, documents) => {
+                res.send(documents)
+            })
     })
 
-    app.post('/getOrderViaEmail', (req, res) =>{
+    app.post('/getOrderViaEmail', (req, res) => {
         const email = req.body.email;
-        agencyCollection.find({email: email})
-        .toArray( (err, documents) =>{
-            res.send(documents)
-        } )
+        agencyCollection.find({ email: email })
+            .toArray((err, documents) => {
+                res.send(documents)
+            })
     })
 
-    app.post('/makeAdmin', (req, res) =>{
+    app.post('/makeAdmin', (req, res) => {
         const email = req.body.email;
-        adminCollection.insertOne({email})
-        .then(result =>{
-            res.send(result.insertedCount > 0)
-        })
+        adminCollection.insertOne({ email })
+            .then(result => {
+                res.send(result.insertedCount > 0)
+            })
     })
 
-    app.post('/isAdmin', (req,res) =>{
+    app.post('/isAdmin', (req, res) => {
         const email = req.body.email;
-        adminCollection.find({email: email})
-        .toArray((err, admin) =>{
-            res.send(admin.length > 0)
-        })
+        adminCollection.find({ email: email })
+            .toArray((err, admin) => {
+                res.send(admin.length > 0)
+            })
     })
 
-    app.post('/addService', (req, body) =>{
+    app.post('/addService', (req, body) => {
         const file = req.files.file;
         const title = req.body.title;
         const description = req.body.description;
@@ -121,11 +115,11 @@ client.connect(err => {
             })
     })
 
-    app.get('/getServiceData', (req, res) =>{
+    app.get('/getServiceData', (req, res) => {
         addService.find({})
-        .toArray((err, documents) =>{
-            res.send(documents)
-        })
+            .toArray((err, documents) => {
+                res.send(documents)
+            })
     })
 });
 
