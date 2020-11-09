@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser')
 const MongoClient = require('mongodb').MongoClient;
-const fileUpload = require('express-fileupload')
+const fileUpload = require('express-fileupload');
+const { ObjectID, ObjectId } = require('mongodb');
 
 require('dotenv').config()
 
@@ -42,7 +43,7 @@ client.connect(err => {
             img: Buffer.from(encImg, 'base64')
         };
 
-        agencyCollection.insertOne({ name, email, service, description,status, price, image })
+        agencyCollection.insertOne({ name, email, service, description, status, price, image })
             .then(result => {
                 res.send(result.insertedCount > 0);
             })
@@ -120,6 +121,18 @@ client.connect(err => {
             .toArray((err, documents) => {
                 res.send(documents)
             })
+    })
+
+    app.patch('/update/:id', (req, res) => {
+        agencyCollection.updateOne({ _id: ObjectId(req.params.id) },
+            {
+                $set: { status: req.body.updateStatus }
+            }
+        )
+        .then(result => {
+            console.log(result)
+        })
+
     })
 });
 
