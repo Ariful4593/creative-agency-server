@@ -3,8 +3,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser')
 const MongoClient = require('mongodb').MongoClient;
 const fileUpload = require('express-fileupload');
-const { ObjectId } = require('mongodb');
-
+const { ObjectID,ObjectId } = require('mongodb');
+const path = require('path')
 require('dotenv').config()
 
 const app = express();
@@ -13,7 +13,7 @@ app.use(cors())
 app.use(fileUpload());
 
 app.get('/', (req, res) => {
-    res.send("Heloo Ariful ISLAM")
+    res.send("Hello Ariful")
 })
 
 
@@ -24,6 +24,15 @@ client.connect(err => {
     const reviewOrder = client.db("creatingAgency").collection("reviewOrder");
     const adminCollection = client.db("creatingAgency").collection("admin");
     const addService = client.db("creatingAgency").collection("addService");
+    const crudCollection = client.db("creatingAgency").collection("crud");
+    app.post("/addProduct", (req, res) => {
+        const product = req.body;
+        console.log(product)
+        // crudCollection.insertOne({product})
+        //     .then(result => {
+        //         console.log('One Product Added')
+        //     })
+    })
     app.post('/order', (req, res) => {
 
         const file = req.files.file;
@@ -123,16 +132,16 @@ client.connect(err => {
             })
     })
 
-    app.patch('/update/:id', (req, res) => {
-        console.log(req.params.id)
-        agencyCollection.updateOne({ _id: req.params.id },
+    app.patch('/update', (req, res) => {
+        agencyCollection.updateOne(
+            { _id: ObjectID(req.body.id) },
             {
-                $set: { status: req.body.status }
+                $set: { 'status': req.body.status }
             }
         )
-        .then(result => {
-            console.log(result)
-        })
+            .then(result => {
+                console.log(result)
+            })
 
     })
 });
