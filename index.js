@@ -5,7 +5,7 @@ const MongoClient = require('mongodb').MongoClient;
 const fileUpload = require('express-fileupload');
 const { ObjectID,ObjectId } = require('mongodb');
 const path = require('path')
-require('dotenv').config()
+    require('dotenv').config()
 
 const app = express();
 app.use(bodyParser.json())
@@ -25,6 +25,7 @@ client.connect(err => {
     const adminCollection = client.db("creatingAgency").collection("admin");
     const addService = client.db("creatingAgency").collection("addService");
     const crudCollection = client.db("creatingAgency").collection("crud");
+    const loginInfo = client.db("creatingAgency").collection("loginInfo");
     app.post("/addProduct", (req, res) => {
         const product = req.body;
         console.log(product)
@@ -132,6 +133,23 @@ client.connect(err => {
             })
     })
 
+    app.post('/userLogin', (req, res) =>{
+        const name = `${req.body.first} ${req.body.last}`;
+        const last = req.body.last;
+        const email = req.body.email;
+        const password = req.body.password;
+
+        loginInfo.insertOne({name, email, password})
+        .then(result => {
+            res.send(result.insertedCount > 0)
+        })
+    })
+    app.get('/userLoginData', (req, res) =>{
+        loginInfo.find({})
+        .toArray((err, documents) => {
+            res.send(documents);
+        })
+    })
     app.patch('/update', (req, res) => {
         agencyCollection.updateOne(
             { _id: ObjectID(req.body.id) },
